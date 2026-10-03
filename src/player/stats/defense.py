@@ -22,15 +22,6 @@ class Defense:
             logger.error(emsg)
             raise ValueError(emsg)
 
-        if self._modifier_physical_defense <=0:
-            emsg = "MODIFIER-PHYSICAL-DEFENSE must be positive"
-            logger.error(emsg)
-            raise ValueError(emsg)
-
-        if self._modifier_special_defense <=0:
-            emsg = "MODIFIER-SPECIAL-DEFENSE must be positive"
-            logger.error(emsg)
-            raise ValueError(emsg)
 
     #getter and setters :
     @property
