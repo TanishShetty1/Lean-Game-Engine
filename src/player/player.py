@@ -1,6 +1,6 @@
 import logging
+from stats.stats import Stats
 from uuid import uuid4
-
 
 logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger(__name__)
@@ -8,13 +8,12 @@ logger = logging.getLogger(__name__)
 
 _FALLBACK_NAME = "MISSING_NAME"
 
-
 class Player:
-    def __init__(self,name:str):
+    def __init__(self,name:str,stats:Stats):
         self._uid = uuid4()
         self._name = self._set_player_name(name)
+        self._stats = self._set_player_stats(stats)
         self._alive = True
-
 
     def _set_player_name(self,name:str):
 
@@ -29,6 +28,13 @@ class Player:
 
         logger.warning(msg)
         return _FALLBACK_NAME
+
+    def _set_player_stats(self,stats:Stats)->None:
+        if not isinstance(stats,Stats):
+            emsg = f"{stats} must be a 'Stats' instance"
+            logger.error(emsg)
+            raise TypeError(emsg)
+        self._stats = stats
     
     
 
