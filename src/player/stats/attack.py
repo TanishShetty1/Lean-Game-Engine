@@ -79,6 +79,4 @@ class Attack:
     @property
     def current_special_attack(self)->int:
         return self._base_special_attack + self._modifier_special_attack
-
     
-

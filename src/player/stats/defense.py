@@ -7,8 +7,8 @@ logger = logging.getLogger(__name__)
 @dataclass
 class Defense:
     _base_physical_defense : int
-    _base_special_defense : int
     _modifier_physical_defense: int
+    _base_special_defense : int
     _modifier_special_defense: int
 
     def __post_init__(self):
