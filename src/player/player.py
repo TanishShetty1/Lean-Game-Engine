@@ -1,5 +1,6 @@
 import logging
 from stats.stats import Stats,initialize_player_stats
+from archetype import PlayerClass,BASE_STATS
 from uuid import uuid4
 
 logging.basicConfig(level = logging.INFO)
@@ -36,7 +37,8 @@ class Player:
             raise TypeError(emsg)
         self._stats = stats
 
-def initialize_player(name:str,stat_dict:dict[str,int])->Player:
+def initialize_player(name:str,player_class:PlayerClass)->Player:
+    stat_dict = BASE_STATS[player_class]
     stats = initialize_player_stats(stat_dict)
     player = Player(name,stats)
     return player

@@ -60,11 +60,11 @@ class Health:
         return self._hit_points>0
 
 
-    def _increment_hit_points(self,increment:int)->int:
+    def increment_hit_points(self,increment:int)->int:
         if not isinstance(increment,int):
             emsg = f"{increment} must be an 'int' type"
             logger.error(emsg)
-            TypeError(emsg)
+            raise TypeError(emsg)
         initial_hp = self._hit_points
         increased_hp = min(increment,self._max_health-initial_hp)
         self._hit_points += increased_hp
@@ -73,11 +73,11 @@ class Health:
         return increased_hp
 
 
-    def _decrement_hit_points(self,decrement:int)->int:
+    def decrement_hit_points(self,decrement:int)->int:
             if not isinstance(decrement,int):
                 emsg = f"{decrement} must be an 'int' type"
                 logger.error(emsg)
-                TypeError(emsg)
+                raise TypeError(emsg)
             initial_hp = self._hit_points
             decreased_hp = min(decrement,self._hit_points)
             self._hit_points -= decreased_hp

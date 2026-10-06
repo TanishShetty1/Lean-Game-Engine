@@ -80,25 +80,25 @@ class Stats:
 def initialize_player_stats(stat_dict:dict[str,int])->Stats:
 
     attack = Attack(stat_dict["base_physical_attack"],
-                    stat_dict["modifier_physical_attack"],
+                    0,
                     stat_dict["base_special_attack"],
-                    stat_dict["modifier_special_attack"])
+                    0)
 
     defense = Defense(stat_dict["base_physical_defense"],
-                    stat_dict["modifier_physical_defense"],
+                    0,
                     stat_dict["base_special_defense"],
-                    stat_dict["modifier_special_defense"])
+                    0)
 
     health = Health(stat_dict["max_health"],
-                    stat_dict["hit_points"])
+                    stat_dict["max_health"])
 
     speed = Speed(stat_dict["base_speed"],
-                  stat_dict["current_speed"])
+                  stat_dict["base_speed"])
     
     stamina = Stamina(stat_dict["max_physical_stamina"],
-                      stat_dict["current_physical_stamina"],
+                      stat_dict["max_physical_stamina"],
                       stat_dict["max_special_stamina"],
-                      stat_dict["current_special_stamina"])
+                      stat_dict["max_special_stamina"])
 
     stats = Stats(attack,defense,health,speed,stamina)
 
