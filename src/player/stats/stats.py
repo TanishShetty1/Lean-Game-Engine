@@ -1,11 +1,11 @@
 import logging
 
 from dataclasses import dataclass
-from attack import Attack
-from defense import Defense
-from health import Health
-from speed import Speed
-from stamina import Stamina
+from src.player.stats.attack import Attack
+from src.player.stats.defense import Defense
+from src.player.stats.health import Health
+from src.player.stats.speed import Speed
+from src.player.stats.stamina import Stamina
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

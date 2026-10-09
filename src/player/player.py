@@ -1,4 +1,6 @@
 import logging
+from src.player.stats.stats import Stats,initialize_player_stats
+from src.player.archetype import PlayerClass,BASE_STATS
 from stats.stats import Stats,initialize_player_stats
 from archetype import PlayerClass,BASE_STATS
 from uuid import uuid4
@@ -42,3 +44,4 @@ def initialize_player(name:str,player_class:PlayerClass)->Player:
     stats = initialize_player_stats(stat_dict)
     player = Player(name,stats)
     return player
+
