@@ -32,12 +32,35 @@ class Player:
         logger.warning(msg)
         return _FALLBACK_NAME
 
-    def _set_player_stats(self,stats:Stats)->None:
+    def _set_player_stats(self,stats:Stats)->Stats:
         if not isinstance(stats,Stats):
             emsg = f"{stats} must be a 'Stats' instance"
             logger.error(emsg)
             raise TypeError(emsg)
-        self._stats = stats
+        return stats
+
+    #interaction methods :
+    def handle_physical_attack(self,physical_attack:int)->None:
+        player_physical_defense = self._stats._defense.current_physical_defense
+        damage = max(0,physical_attack-player_physical_defense)
+        if damage>0 :
+            msg = f"{self.__repr__()} took damage worth {damage}"
+            self._stats.health.decrement_hit_points(damage)
+            #TODO: handle scenario where the player dies
+        else :
+            msg = f"{self.__repr__()} took no damage"
+        logger.info(msg)
+
+    def handle_special_attack(self,special_attack:int)->None:
+        player_special_defense = self. _stats._defense._base_special_defense
+        damage = max(0,special_attack - player_special_defense)
+        if damage>0 :
+            msg = f"{self.__repr__()} took damage worth {damage}"
+            self._stats.health.decrement_hit_points(damage)
+            #TODO: handle scenario where the player dies
+        else :
+            msg = f"{self.__repr__()} took no damage"
+        logger.info(msg)
 
 def initialize_player(name:str,player_class:PlayerClass)->Player:
     stat_dict = BASE_STATS[player_class]
