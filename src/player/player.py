@@ -1,70 +1,79 @@
 import logging
-from src.player.stats.stats import Stats,initialize_player_stats
-from src.player.archetype import PlayerClass,BASE_STATS
-from stats.stats import Stats,initialize_player_stats
-from archetype import PlayerClass,BASE_STATS
 from uuid import uuid4
 
-logging.basicConfig(level = logging.INFO)
-logger = logging.getLogger(__name__)
+from .archetype import BASE_STATS, PlayerClass
+from .stats.stats import Stats, initialize_player_stats
 
+logger = logging.getLogger(__name__)
 
 _FALLBACK_NAME = "MISSING_NAME"
 
+
 class Player:
-    def __init__(self,name:str,stats:Stats):
+    def __init__(self, name: str, stats: Stats) -> None:
         self._uid = uuid4()
         self._name = self._set_player_name(name)
         self._stats = self._set_player_stats(stats)
         self._alive = True
 
-    def _set_player_name(self,name:str):
+    @property
+    def uid(self):
+        return self._uid
 
-        if isinstance(name,str) and name!=" ":
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def stats(self) -> Stats:
+        return self._stats
+
+    @property
+    def is_alive(self) -> bool:
+        return self._alive
+
+    @staticmethod
+    def _set_player_name(name: str) -> str:
+        if isinstance(name, str) and name.strip():
             return name
 
-        #TODO implement a way to assign a random unique name
-        if not isinstance(name,str):
-            msg = "{name} is not a string instance, assigning a random name"
-        else:
-            msg = "Empty string entered, assigning a random name"
-
-        logger.warning(msg)
+        logger.warning("Invalid player name %r; assigning fallback name", name)
         return _FALLBACK_NAME
 
-    def _set_player_stats(self,stats:Stats)->Stats:
-        if not isinstance(stats,Stats):
+    @staticmethod
+    def _set_player_stats(stats: Stats) -> Stats:
+        if not isinstance(stats, Stats):
             emsg = f"{stats} must be a 'Stats' instance"
             logger.error(emsg)
             raise TypeError(emsg)
         return stats
 
-    #interaction methods :
-    def handle_physical_attack(self,physical_attack:int)->None:
-        player_physical_defense = self._stats._defense.current_physical_defense
-        damage = max(0,physical_attack-player_physical_defense)
-        if damage>0 :
-            msg = f"{self.__repr__()} took damage worth {damage}"
-            self._stats.health.decrement_hit_points(damage)
-            #TODO: handle scenario where the player dies
-        else :
-            msg = f"{self.__repr__()} took no damage"
-        logger.info(msg)
+    def _apply_damage(self, attack: int, defense: int) -> None:
+        if not isinstance(attack, int):
+            raise TypeError("attack must be an 'int' type")
+        if attack < 0:
+            raise ValueError("attack must be non-negative")
 
-    def handle_special_attack(self,special_attack:int)->None:
-        player_special_defense = self. _stats._defense._base_special_defense
-        damage = max(0,special_attack - player_special_defense)
-        if damage>0 :
-            msg = f"{self.__repr__()} took damage worth {damage}"
+        damage = max(0, attack - defense)
+        if damage:
             self._stats.health.decrement_hit_points(damage)
-            #TODO: handle scenario where the player dies
-        else :
-            msg = f"{self.__repr__()} took no damage"
-        logger.info(msg)
+            self._alive = self._stats.health.has_hit_points_left
 
-def initialize_player(name:str,player_class:PlayerClass)->Player:
-    stat_dict = BASE_STATS[player_class]
-    stats = initialize_player_stats(stat_dict)
-    player = Player(name,stats)
-    return player
+        logger.info("%s took damage worth %s", self, damage)
+
+    def handle_physical_attack(self, physical_attack: int) -> None:
+        defense = self._stats.defense.current_physical_defense
+        self._apply_damage(physical_attack, defense)
+
+    def handle_special_attack(self, special_attack: int) -> None:
+        defense = self._stats.defense.current_special_defense
+        self._apply_damage(special_attack, defense)
+
+    def __repr__(self) -> str:
+        return f"Player(name={self._name!r}, uid={self._uid})"
+
+
+def initialize_player(name: str, player_class: PlayerClass) -> Player:
+    stats = initialize_player_stats(BASE_STATS[player_class])
+    return Player(name, stats)
 

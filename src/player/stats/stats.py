@@ -1,40 +1,40 @@
 import logging
-
 from dataclasses import dataclass
-from src.player.stats.attack import Attack
-from src.player.stats.defense import Defense
-from src.player.stats.health import Health
-from src.player.stats.speed import Speed
-from src.player.stats.stamina import Stamina
+from .attack import Attack
+from .defense import Defense
+from .health import Health
+from .speed import Speed
+from .stamina import Stamina
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class Stats:
-    _attack : Attack
-    _defense : Defense
-    _health : Health
-    _speed : Speed
-    _stamina : Stamina
+    _attack: Attack
+    _defense: Defense
+    _health: Health
+    _speed: Speed
+    _stamina: Stamina
 
     @property
-    def attack(self)->Attack:
+    def attack(self) -> Attack:
         return self._attack
 
     @attack.setter
-    def attack(self,attack:Attack)->None:
-        if not isinstance(attack,Attack):
+    def attack(self, attack: Attack) -> None:
+        if not isinstance(attack, Attack):
             emsg = f"{attack} must be an 'Attack' instance"
             logger.error(emsg)
             raise TypeError(emsg)
+        self._attack = attack
 
     @property
-    def defense(self)->Defense:
+    def defense(self) -> Defense:
         return self._defense
 
     @defense.setter
-    def defense(self,defense:Defense)->None:
+    def defense(self, defense: Defense) -> None:
         if not isinstance(defense,Defense):
             emsg = f"{defense} is not a 'Defense' instance"
             logger.error(emsg)
@@ -42,7 +42,7 @@ class Stats:
         self._defense = defense
 
     @property 
-    def health(self)->Health:
+    def health(self) -> Health:
         return self._health
 
     @health.setter
@@ -54,7 +54,7 @@ class Stats:
         self._health = health
 
     @property
-    def speed(self)->Speed:
+    def speed(self) -> Speed:
         return self._speed
 
     @speed.setter
@@ -66,7 +66,7 @@ class Stats:
         self._speed = speed
 
     @property
-    def stamina(self)->Stamina:
+    def stamina(self) -> Stamina:
         return self._stamina
 
     @stamina.setter
@@ -77,7 +77,7 @@ class Stats:
             raise TypeError(emsg)
         self._stamina = stamina
 
-def initialize_player_stats(stat_dict:dict[str,int])->Stats:
+def initialize_player_stats(stat_dict: dict[str, int]) -> Stats:
 
     attack = Attack(stat_dict["base_physical_attack"],
                     0,

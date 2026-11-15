@@ -1,7 +1,6 @@
 import logging
 from dataclasses import dataclass
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -47,7 +46,7 @@ class Defense:
             emsg = "BASE-SPECIAL-DEFENSE must be an 'int' type"
             logger.error(emsg)
             raise TypeError(emsg)
-        self._base_physical_defense = base_special_defense
+        self._base_special_defense = base_special_defense
         return
 
     @property
@@ -60,7 +59,7 @@ class Defense:
             emsg = "MODIFIER-PHYSICAL-DEFENSE must be an 'int' type"
             logger.error(emsg)
             raise TypeError(emsg)
-        self._base_physical_defense = modifier_physical_defense
+        self._modifier_physical_defense = modifier_physical_defense
         return
 
     @property
@@ -73,7 +72,7 @@ class Defense:
             emsg = "MODIFIER-SPECIAL-DEFENSE must be an 'int' type"
             logger.error(emsg)
             raise TypeError(emsg)
-        self._base_physical_defense = modifier_special_defense
+        self._modifier_special_defense = modifier_special_defense
         return
 
     @property
