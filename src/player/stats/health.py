@@ -1,91 +1,53 @@
-import logging
 from dataclasses import dataclass
 
-logger = logging.getLogger(__name__)
+from .validation import validate_non_negative, validate_positive
+
 
 @dataclass
 class Health:
-    _max_health:int
-    _hit_points:int
+    _max_health: int
+    _hit_points: int
 
-    def __post_init__(self)->None:
-        if(self._max_health<=0):
-            emsg = "MAX-HEALTH cannot be initialized with a non positive value"
-            logger.error(emsg)
-            raise ValueError(emsg)
+    def __post_init__(self) -> None:
+        self._max_health = validate_positive(self._max_health, "MAX-HEALTH")
+        self._hit_points = min(
+            validate_non_negative(self._hit_points, "HIT-POINTS"),
+            self._max_health,
+        )
 
-        if(self._hit_points<0):
-            emsg = "HIT-POINTS cannot be initialized with a non positive value"
-            logger.error(emsg)
-            raise ValueError(emsg)
-
-        if(self._hit_points>self._max_health):
-            emsg = (f"HIT-POINTS({self._hit_points}) cannot exceed MAX-HEALTH({self._max_health}) " 
-                   f"HIT-POINTS {self._hit_points}->{self._max_health}")
-            logger.warning(emsg)
-            self._hit_points = self._max_health
-
-
-    #getter and setters : 
     @property
-    def max_health(self)->int:
+    def max_health(self) -> int:
         return self._max_health
 
     @max_health.setter
-    def max_health(self,max_health:int)->None:
-        if not isinstance(max_health,int):
-            emsg = "MAX-HEALTH must be an 'int' type"
-            logger.error(emsg)
-            raise TypeError(emsg)
-        self._max_health = max_health
-        return
+    def max_health(self, value: int) -> None:
+        value = validate_positive(value, "MAX-HEALTH")
+        self._max_health = value
+        self._hit_points = min(self._hit_points, value)
 
     @property
     def hit_points(self) -> int:
         return self._hit_points
 
     @hit_points.setter
-    def hit_points(self,hit_points:int)->None:
-        if not isinstance(hit_points,int):
-            emsg = "HIT-POINTS must be an 'int' type"
-            logger.error(emsg)
-            raise TypeError(emsg)
-        self._hit_points = hit_points
-        return
+    def hit_points(self, value: int) -> None:
+        self._hit_points = min(
+            validate_non_negative(value, "HIT-POINTS"),
+            self._max_health,
+        )
 
-
-    #interaction methods:
     @property
     def has_hit_points_left(self) -> bool:
-        return self._hit_points>0
+        return self._hit_points > 0
 
+    def increment_hit_points(self, increment: int) -> int:
+        increment = validate_non_negative(increment, "INCREMENT")
+        increased = min(increment, self._max_health - self._hit_points)
+        self._hit_points += increased
+        return increased
 
-    def increment_hit_points(self,increment:int)->int:
-        if not isinstance(increment,int):
-            emsg = f"{increment} must be an 'int' type"
-            logger.error(emsg)
-            raise TypeError(emsg)
-        if increment < 0:
-            raise ValueError("increment must be non-negative")
-        initial_hp = self._hit_points
-        increased_hp = min(increment,self._max_health-initial_hp)
-        self._hit_points += increased_hp
-        msg = f"HIT-POINTS increased from {initial_hp}->{self._hit_points}"
-        logger.info(msg)
-        return increased_hp
-
-
-    def decrement_hit_points(self,decrement:int)->int:
-        if not isinstance(decrement,int):
-            emsg = f"{decrement} must be an 'int' type"
-            logger.error(emsg)
-            raise TypeError(emsg)
-        if decrement < 0:
-            raise ValueError("decrement must be non-negative")
-        initial_hp = self._hit_points
-        decreased_hp = min(decrement,self._hit_points)
-        self._hit_points -= decreased_hp
-        msg = f"HIT-POINTS decreased from {initial_hp}->{self._hit_points}"
-        logger.info(msg)
-        return decreased_hp
-    
+    def decrement_hit_points(self, decrement: int) -> int:
+        decrement = validate_non_negative(decrement, "DECREMENT")
+        decreased = min(decrement, self._hit_points)
+        self._hit_points -= decreased
+        return decreased
